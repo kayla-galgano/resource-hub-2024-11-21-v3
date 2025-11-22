@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Alex Resource Hub · Login</title>
+  <style>
+    :root {
+      --bg: radial-gradient(circle at top, #c7f9ff 0%, #e0f2ff 40%, #eaf2fb 100%);
+      --surface: rgba(255, 255, 255, 0.98);
+      --surface-muted: rgba(255, 255, 255, 0.85);
+      --text-main: #0f172a;
+      --text-subtle: #475569;
+      --accent: #0891b2;
+      --accent-strong: #0e7490;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.25);
+      --border: #cbd5f5;
+      font-size: var(--base-font-size, 16px);
+    }
+
+    :root[data-contrast="high"] {
+      --bg: #050505;
+      --surface: #111827;
+      --surface-muted: #1f2937;
+      --text-main: #f8fafc;
+      --text-subtle: #e2e8f0;
+      --accent: #fbbf24;
+      --accent-strong: #f97316;
+      --shadow-soft: 0 0 0 rgba(0, 0, 0, 0.4);
+      --border: #fcd34d;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 12px;
+      transition: background 0.3s ease;
+    }
+
+    main {
+      width: min(420px, 100%);
+      background: var(--surface);
+      border-radius: 28px;
+      padding: 28px 26px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid var(--border);
+    }
+
+    .logo {
+      width: 82px;
+      height: 82px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, #06b6d4, #84cc16);
+      display: grid;
+      place-items: center;
+      margin: 0 auto 18px;
+      color: #fff;
+      font-size: 1.6rem;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.55rem;
+      text-align: center;
+      color: var(--text-main);
+    }
+
+    p.lead {
+      margin: 10px 0 18px;
+      text-align: center;
+      color: var(--text-subtle);
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+
+    label {
+      display: block;
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    input[type="password"] {
+      width: 100%;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      padding: 14px 16px;
+      font-size: 1rem;
+      transition: border 0.2s ease;
+      background: var(--surface-muted);
+      color: var(--text-main);
+    }
+
+    input[type="password"]:focus {
+      outline: 3px solid rgba(8, 145, 178, 0.25);
+      border-color: var(--accent);
+    }
+
+    button.primary {
+      width: 100%;
+      border: none;
+      border-radius: 20px;
+      margin-top: 12px;
+      padding: 14px 18px;
+      font-size: 1rem;
+      font-weight: 600;
+      background: var(--accent);
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.1s ease;
+    }
+
+    button.primary:active {
+      transform: translateY(1px);
+      background: var(--accent-strong);
+    }
+
+    .controls {
+      margin-top: 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .controls button.toggle {
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-main);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .text-size {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      color: var(--text-subtle);
+    }
+
+    .text-size input {
+      flex: 1;
+    }
+
+    .status {
+      margin-top: 14px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    .status.error {
+      background: #fee2e2;
+      color: #991b1b;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <main aria-labelledby="appTitle">
+    <div class="logo" aria-hidden="true">☰</div>
+    <h1 id="appTitle">Alex’s Resource Hub</h1>
+    <p class="lead">The family’s one-stop space for key info, plans, contacts, and updates.</p>
+
+    <form id="loginForm">
+      <label for="passwordInput">Family password</label>
+      <input id="passwordInput"
+             type="password"
+             autocomplete="current-password"
+             inputmode="text"
+             aria-describedby="passwordHelp"
+             placeholder="Enter password" />
+      <div id="passwordHelp" style="font-size:0.85rem;color:var(--text-subtle);margin-top:6px;">
+        Password is shared verbally. Reach out to Alex’s care lead if you need access.
+      </div>
+      <button class="primary" type="submit">Open the hub</button>
+      <div id="statusMsg" class="status error"></div>
+    </form>
+
+    <section class="controls" aria-label="Accessibility controls">
+      <button type="button" class="toggle" id="contrastToggle">◑ High contrast mode</button>
+      <div class="text-size">
+        <span>Text size</span>
+        <input id="textSizeSlider" type="range" min="15" max="20" value="16" />
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const PASSWORD = "alex123";
+    const STORAGE_KEY = "alexHubAuthed";
+    const CONTRAST_KEY = "alexHubContrast";
+    const SIZE_KEY = "alexHubBaseFont";
+
+    const root = document.documentElement;
+    const form = document.getElementById("loginForm");
+    const input = document.getElementById("passwordInput");
+    const statusEl = document.getElementById("statusMsg");
+    const contrastToggle = document.getElementById("contrastToggle");
+    const textSizeSlider = document.getElementById("textSizeSlider");
+
+    // Redirect if already authed
+    if (localStorage.getItem(STORAGE_KEY) === "true") {
+      window.location.href = "index.html";
+    }
+
+    // Restore preferences
+    const savedContrast = localStorage.getItem(CONTRAST_KEY);
+    if (savedContrast === "high") {
+      root.dataset.contrast = "high";
+    }
+    const savedFont = localStorage.getItem(SIZE_KEY);
+    if (savedFont) {
+      root.style.setProperty("--base-font-size", savedFont + "px");
+      textSizeSlider.value = savedFont;
+    }
+
+    function showError(message) {
+      statusEl.textContent = message;
+      statusEl.classList.add("error");
+      statusEl.style.display = "block";
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const entered = input.value.trim();
+      if (!entered) {
+        showError("Please enter the password.");
+        input.focus();
+        return;
+      }
+
+      if (entered === PASSWORD) {
+        localStorage.setItem(STORAGE_KEY, "true");
+        window.location.href = "index.html";
+      } else {
+        showError("Incorrect password. Please try again.");
+        input.select();
+      }
+    });
+
+    contrastToggle.addEventListener("click", () => {
+      const isHigh = root.dataset.contrast === "high";
+      if (isHigh) {
+        root.dataset.contrast = "normal";
+        localStorage.removeItem(CONTRAST_KEY);
+      } else {
+        root.dataset.contrast = "high";
+        localStorage.setItem(CONTRAST_KEY, "high");
+      }
+    });
+
+    textSizeSlider.addEventListener("input", (event) => {
+      const size = event.target.value;
+      root.style.setProperty("--base-font-size", size + "px");
+      localStorage.setItem(SIZE_KEY, size);
+    });
+
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        form.requestSubmit();
+      }
+    });
+  </script>
+</body>
+</html>

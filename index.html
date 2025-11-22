@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Alex Resource Hub</title>
+  <meta name="description" content="Family-first, mobile dashboard for Alex’s care plan, medical history, benefits, and resources." />
+  <style>
+    :root {
+      --cyan-50: #ecfeff;
+      --cyan-100: #cffafe;
+      --cyan-200: #a5f3fc;
+      --cyan-300: #67e8f9;
+      --cyan-400: #22d3ee;
+      --cyan-500: #06b6d4;
+      --cyan-600: #0891b2;
+      --lime-100: #ecfccb;
+      --lime-200: #d9f99d;
+      --lime-300: #bef264;
+      --lime-400: #a3e635;
+      --lime-500: #84cc16;
+      --lime-600: #65a30d;
+      --gray-50: #f8fafc;
+      --gray-100: #f1f5f9;
+      --gray-200: #e2e8f0;
+      --gray-400: #94a3b8;
+      --gray-600: #475569;
+      --gray-800: #1f2937;
+      --gray-900: #0f172a;
+      --surface: #ffffff;
+      --surface-muted: rgba(255, 255, 255, 0.8);
+      --text-main: #0f172a;
+      --text-subtle: #475569;
+      --shadow-soft: 0 25px 60px rgba(15, 23, 42, 0.15);
+      --shadow-card: 0 18px 40px rgba(15, 23, 42, 0.12);
+      font-size: var(--base-font-size, 17px);
+    }
+
+    :root[data-contrast="high"] {
+      --surface: #111827;
+      --surface-muted: #1f2937;
+      --text-main: #f8fafc;
+      --text-subtle: #e2e8f0;
+      --gray-200: #303848;
+      --gray-400: #cbd5f5;
+      --gray-50: #030712;
+      --gray-100: #111827;
+      --shadow-soft: 0 0 0 rgba(0, 0, 0, 0.4);
+      --shadow-card: 0 0 0 rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle farthest-side at top, var(--cyan-50), #f6fff5, #ebfaff);
+      min-height: 100vh;
+      color: var(--text-main);
+    }
+
+    .app-shell {
+      width: min(1020px, 100%);
+      margin: 0 auto;
+      padding: clamp(16px, 4vw, 36px) clamp(14px, 4vw, 32px) 48px;
+    }
+
+    header {
+      background: var(--surface);
+      border-radius: 32px;
+      padding: clamp(20px, 5vw, 32px);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--gray-200);
+    }
+
+    header::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 85% 10%, rgba(255, 255, 255, 0.35), transparent 55%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 0.75rem;
+      color: var(--text-subtle);
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      color: var(--text-main);
+    }
+
+    .hero-copy {
+      margin: 10px 0 0;
+      color: var(--text-subtle);
+      line-height: 1.5;
+      max-width: 560px;
+    }
+
+    .control-bar {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .control-bar button,
+    .control-bar select {
+      border-radius: 999px;
+      border: 1px solid var(--gray-200);
+      background: var(--surface-muted);
+      color: var(--text-main);
+      padding: 10px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .control-bar select {
+      appearance: none;
+      padding-right: 30px;
+    }
+
+    .control-bar button.primary {
+      background: linear-gradient(135deg, var(--cyan-500), var(--lime-500));
+      border: none;
+      color: #fff;
+      box-shadow: var(--shadow-card);
+    }
+
+    section {
+      margin-top: 32px;
+    }
+
+    .updates-card {
+      background: var(--surface);
+      border-radius: 28px;
+      padding: 20px 22px;
+      border: 1px solid var(--cyan-100);
+      box-shadow: var(--shadow-card);
+    }
+
+    .updates-card h2 {
+      margin: 0 0 14px;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .updates-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .updates-list li {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: var(--gray-50);
+      border: 1px dashed var(--cyan-200);
+    }
+
+    .updates-list time {
+      font-size: 0.8rem;
+      color: var(--text-subtle);
+    }
+
+    .tile-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    @media (min-width: 680px) {
+      .tile-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 960px) {
+      .tile-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    .tile {
+      border: none;
+      border-radius: 24px;
+      padding: 16px;
+      min-height: 150px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: left;
+      background: var(--surface);
+      color: var(--text-main);
+      box-shadow: var(--shadow-card);
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tile::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 20% -20%, rgba(255, 255, 255, 0.4), transparent 60%);
+      pointer-events: none;
+    }
+
+    .tile:focus-visible {
+      outline: 3px solid var(--cyan-400);
+      outline-offset: 3px;
+    }
+
+    .tile:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 50px rgba(15, 23, 42, 0.2);
+    }
+
+    .tile .icon {
+      font-size: 1.6rem;
+      margin-bottom: 8px;
+    }
+
+    .tile h3 {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+
+    .tile p {
+      margin: 4px 0 0;
+      font-size: 0.85rem;
+      color: var(--text-subtle);
+      line-height: 1.4;
+    }
+
+    .tile.accent-cyan {
+      background: linear-gradient(145deg, var(--cyan-500), var(--cyan-600));
+      color: #fff;
+    }
+
+    .tile.accent-lime {
+      background: linear-gradient(145deg, var(--lime-500), var(--lime-600));
+      color: #0f2d00;
+    }
+
+    .tile.accent-emerald {
+      background: linear-gradient(145deg, #059669, #16a34a);
+      color: #f7fee7;
+    }
+
+    .search-card {
+      margin-top: 30px;
+      background: var(--surface);
+      border-radius: 28px;
+      padding: 22px;
+      border: 1px solid var(--gray-200);
+      box-shadow: var(--shadow-card);
+    }
+
+    .search-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .search-bar input {
+      flex: 1;
+      border-radius: 999px;
+      border: 1px solid var(--gray-200);
+      padding: 12px 16px;
+      font-size: 1rem;
+    }
+
+    .search-bar button {
+      border-radius: 999px;
+      border: none;
+      padding: 12px 18px;
+      background: var(--cyan-500);
+      color: #fff;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: var(--shadow-card);
+    }
+
+    .search-results {
+      margin-top: 16px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .result {
+      border-radius: 18px;
+      border: 1px solid var(--gray-200);
+      padding: 12px 14px;
+      background: var(--gray-50);
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .result .title {
+      font-weight: 600;
+    }
+
+    .result .meta {
+      font-size: 0.85rem;
+      color: var(--text-subtle);
+    }
+
+    .folder-grid {
+      margin-top: 24px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .folder-card {
+      background: var(--surface);
+      border-radius: 28px;
+      padding: 20px 22px;
+      border: 1px solid var(--gray-200);
+      box-shadow: var(--shadow-card);
+    }
+
+    .folder-card h3 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .folder-card p {
+      margin: 6px 0 14px;
+      color: var(--text-subtle);
+      font-size: 0.9rem;
+    }
+
+    .folder-card ul {
+      margin: 0;
+      padding-left: 18px;
+      columns: 2;
+      gap: 12px;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 640px) {
+      .folder-card ul {
+        columns: 1;
+      }
+    }
+
+    .folder-card footer {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .folder-card footer button {
+      border-radius: 16px;
+      border: 1px solid var(--gray-200);
+      background: var(--gray-50);
+      padding: 6px 14px;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .footer-meta {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--text-subtle);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header>
+      <div class="eyebrow">Family dashboard</div>
+      <h1>What would you like to do today?</h1>
+      <p class="hero-copy">
+        Quickly reach Alex’s key information, action plans, therapy resources, benefits, and medical history.
+        Built so parents, siblings, and caregivers can find answers in two taps.
+      </p>
+      <div class="control-bar">
+        <select id="textSizeSelect" aria-label="Text size">
+          <option value="15">Text size · Small</option>
+          <option value="17" selected>Text size · Comfortable</option>
+          <option value="19">Text size · Large</option>
+          <option value="21">Text size · Extra large</option>
+        </select>
+        <button type="button" id="contrastBtn">◑ High contrast</button>
+        <button type="button" class="primary" id="driveBtn">Open Google Drive</button>
+        <button type="button" id="logoutBtn">Log out</button>
+      </div>
+    </header>
+
+    <section aria-labelledby="updatesHeading">
+      <div class="updates-card">
+        <h2 id="updatesHeading">Catch up on what you missed</h2>
+        <ul class="updates-list" id="updatesList"></ul>
+        <div class="control-bar" style="margin-top:16px;">
+          <button type="button" id="updatesLogBtn">View full update log</button>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="tileHeading" style="margin-top:32px;">
+      <h2 id="tileHeading" style="margin-bottom:16px;">Quick actions</h2>
+      <div class="tile-grid" id="tileGrid" role="list"></div>
+    </section>
+
+    <section class="search-card" aria-labelledby="searchHeading">
+      <h2 id="searchHeading">Search the hub</h2>
+      <p style="margin:0;color:var(--text-subtle);font-size:0.95rem;">
+        Type any keyword (login, housing, therapy, SSA, lab results…) to jump straight to the right Drive folder or document.
+      </p>
+      <div class="search-bar">
+        <input id="searchInput" type="search" placeholder="Try “insurance card”, “crisis plan”, “medical timeline”…" />
+        <button type="button" id="searchBtn">Search</button>
+      </div>
+      <div id="searchResults" class="search-results" aria-live="polite"></div>
+    </section>
+
+    <section aria-labelledby="foldersHeading">
+      <h2 id="foldersHeading" style="margin:28px 0 16px;">Folder highlights</h2>
+      <div class="folder-grid" id="folderGrid"></div>
+    </section>
+
+    <footer class="footer-meta">
+      Alex’s Resource Hub · private family information workspace · designed for quick reference on phones, tablets, and desktops.
+    </footer>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "alexHubAuthed";
+    if (localStorage.getItem(STORAGE_KEY) !== "true") {
+      window.location.href = "auth.html";
+    }
+
+    const HUB_LINKS = {
+      driveRoot: "https://drive.google.com/drive/folders/REPLACE_ROOT_FOLDER_ID",
+      catchupLog: "https://docs.google.com/document/d/REPLACE_CATCHUP_LOG",
+      keyInfoFolder: "https://drive.google.com/drive/folders/REPLACE_KEY_INFO_FOLDER",
+      alexKeyInfoDoc: "https://docs.google.com/document/d/REPLACE_ALEX_KEY_INFO",
+      insuranceCardsDoc: "https://drive.google.com/file/d/REPLACE_INSURANCE_CARDS",
+      idsFolder: "https://drive.google.com/drive/folders/REPLACE_IDS",
+      emergencyContactsDoc: "https://docs.google.com/spreadsheets/d/REPLACE_EMERGENCY_CONTACTS",
+      providerContactsDoc: "https://docs.google.com/spreadsheets/d/REPLACE_PROVIDER_CONTACTS",
+      familyActionPlanDoc: "https://docs.google.com/document/d/REPLACE_FAMILY_PLAN_DOC",
+      meetingNotesDoc: "https://docs.google.com/document/d/REPLACE_MEETING_NOTES",
+      housingOptionsFolder: "https://drive.google.com/drive/folders/REPLACE_HOUSING_OPTIONS",
+      crisisFlowchartDoc: "https://docs.google.com/presentation/d/REPLACE_CRISIS_FLOWCHART",
+      budgetSheetsFolder: "https://drive.google.com/drive/folders/REPLACE_BUDGET_SHEETS",
+      medicalCareFolder: "https://drive.google.com/drive/folders/REPLACE_MEDICAL_CARE",
+      medicalRecordsDoc: "https://drive.google.com/file/d/REPLACE_MEDICAL_RECORDS",
+      medicationListDoc: "https://docs.google.com/spreadsheets/d/REPLACE_MED_LIST",
+      labResultsFolder: "https://drive.google.com/drive/folders/REPLACE_LABS",
+      uwHarborviewFolder: "https://drive.google.com/drive/folders/REPLACE_UW_HARBORVIEW",
+      rehabContractFile: "https://drive.google.com/file/d/REPLACE_REHAB_CONTRACT",
+      symptomLogsFolder: "https://drive.google.com/drive/folders/REPLACE_SYMPTOM_LOGS",
+      specialistContactsDoc: "https://docs.google.com/spreadsheets/d/REPLACE_SPECIALIST_CONTACTS",
+      medicalTimelineDoc: "https://docs.google.com/document/d/REPLACE_MEDICAL_TIMELINE",
+      behavioralHealthFolder: "https://drive.google.com/drive/folders/REPLACE_BEHAVIORAL_HEALTH",
+      crisisPlanDoc: "https://docs.google.com/document/d/REPLACE_CRISIS_PLAN",
+      routineTemplatesFolder: "https://drive.google.com/drive/folders/REPLACE_ROUTINES",
+      therapyProviderListDoc: "https://docs.google.com/spreadsheets/d/REPLACE_THERAPY_LIST",
+      supportGroupsDoc: "https://docs.google.com/document/d/REPLACE_SUPPORT_GROUPS",
+      redpointResourcesFolder: "https://drive.google.com/drive/folders/REPLACE_REDPOINT",
+      facilitiesListDoc: "https://docs.google.com/document/d/REPLACE_FACILITIES",
+      namiNotesFolder: "https://drive.google.com/drive/folders/REPLACE_NAMI",
+      journalPromptsFolder: "https://drive.google.com/drive/folders/REPLACE_JOURNAL_PROMPTS",
+      rehabInfoFolder: "https://drive.google.com/drive/folders/REPLACE_REHAB_INFO",
+      treatmentProgramsDoc: "https://docs.google.com/document/d/REPLACE_TREATMENT_PROGRAMS",
+      benefitsFolder: "https://drive.google.com/drive/folders/REPLACE_BENEFITS",
+      dacApplicationDoc: "https://docs.google.com/document/d/REPLACE_DAC_APPLICATION",
+      ssiInfoDoc: "https://docs.google.com/document/d/REPLACE_SSI_INFO",
+      ssaLettersFolder: "https://drive.google.com/drive/folders/REPLACE_SSA_LETTERS",
+      medicaidFolder: "https://drive.google.com/drive/folders/REPLACE_MEDICAID",
+      dshsDocsFolder: "https://drive.google.com/drive/folders/REPLACE_DSHS",
+      dvrFolder: "https://drive.google.com/drive/folders/REPLACE_DVR",
+      applicationsFolder: "https://drive.google.com/drive/folders/REPLACE_APPLICATIONS",
+      approvalsFolder: "https://drive.google.com/drive/folders/REPLACE_APPROVALS",
+      housingVoucherInfoDoc: "https://docs.google.com/document/d/REPLACE_VOUCHER_INFO",
+      legalFolder: "https://drive.google.com/drive/folders/REPLACE_LEGAL",
+      poaFolder: "https://drive.google.com/drive/folders/REPLACE_POA",
+      guardianshipDocsFolder: "https://drive.google.com/drive/folders/REPLACE_GUARDIANSHIP",
+      hipaaFolder: "https://drive.google.com/drive/folders/REPLACE_HIPAA",
+      legalContactsDoc: "https://docs.google.com/document/d/REPLACE_LEGAL_CONTACTS",
+      specialNeedsTrustDoc: "https://docs.google.com/document/d/REPLACE_TRUST_INFO",
+      durablePoaGuideDoc: "https://docs.google.com/document/d/REPLACE_DURABLE_POA",
+      historyFolder: "https://drive.google.com/drive/folders/REPLACE_HISTORY",
+      alexHistoryTimelineDoc: "https://docs.google.com/document/d/REPLACE_ALEX_HISTORY",
+      pastDiagnosesDoc: "https://docs.google.com/document/d/REPLACE_PAST_DIAGNOSES",
+      oldRecordsFolder: "https://drive.google.com/drive/folders/REPLACE_OLD_RECORDS",
+      archivedItemsFolder: "https://drive.google.com/drive/folders/REPLACE_ARCHIVED_ITEMS",
+      resourceLibraryFolder: "https://drive.google.com/drive/folders/REPLACE_RESOURCE_LIBRARY",
+      articlesFolder: "https://drive.google.com/drive/folders/REPLACE_ARTICLES",
+      worksheetsFolder: "https://drive.google.com/drive/folders/REPLACE_WORKSHEETS",
+      externalGuidesFolder: "https://drive.google.com/drive/folders/REPLACE_EXTERNAL_GUIDES",
+      generalEducationFolder: "https://drive.google.com/drive/folders/REPLACE_GENERAL_ED",
+      helpfulDownloadsFolder: "https://drive.google.com/drive/folders/REPLACE_DOWNLOADS",
+      miscResourcesFolder: "https://drive.google.com/drive/folders/REPLACE_MISC_RESOURCES",
+      contactsDoc: "https://docs.google.com/document/d/REPLACE_CONTACTS_OVERVIEW"
+    };
+
+    const RECENT_UPDATES = [
+      { summary: "Redpoint submitted the Harborview housing application.", timeAgo: "2 days ago", author: "Jamie" },
+      { summary: "Uploaded latest therapy provider list from BH team.", timeAgo: "4 days ago", author: "Mom" },
+      { summary: "Family meeting notes for Nov 18 are ready to review.", timeAgo: "1 week ago", author: "Chris" }
+    ];
+
+    const TILE_ACTIONS = [
+      { icon: "🔑", title: "Key information & access", blurb: "Logins, IDs, insurance, portals", linkKey: "keyInfoFolder", accent: "accent-cyan" },
+      { icon: "📝", title: "Family meeting notes", blurb: "Catch up on decisions", linkKey: "meetingNotesDoc", accent: "accent-cyan" },
+      { icon: "📋", title: "Family action plan", blurb: "Steps, timelines, crisis flow", linkKey: "familyActionPlanDoc", accent: "accent-lime" },
+      { icon: "❤️", title: "Therapy & recovery resources", blurb: "Crisis plan, routines, support", linkKey: "behavioralHealthFolder", accent: "accent-emerald" },
+      { icon: "🏥", title: "Medical records & labs", blurb: "History, UW/Harborview, meds", linkKey: "medicalCareFolder" },
+      { icon: "📞", title: "Contact list", blurb: "Case managers & providers", linkKey: "contactsDoc" },
+      { icon: "⚠️", title: "Crisis plan", blurb: "If-this-then steps, emergency playbook", linkKey: "crisisPlanDoc", accent: "accent-cyan" },
+      { icon: "💊", title: "Medication list", blurb: "Dosages, refills, pharmacy", linkKey: "medicationListDoc" },
+      { icon: "🏛️", title: "Benefits & government", blurb: "SSA, Medicaid, vouchers", linkKey: "benefitsFolder" },
+      { icon: "⚖️", title: "Legal & safeguards", blurb: "POA, HIPAA, guardianship", linkKey: "legalFolder" },
+      { icon: "🕰️", title: "History & timeline", blurb: "Past diagnoses & milestones", linkKey: "historyFolder" },
+      { icon: "📚", title: "Resource library", blurb: "Worksheets, guides, downloads", linkKey: "resourceLibraryFolder" },
+      { icon: "🔍", title: "Search all folders", blurb: "Open Drive root & search", linkKey: "driveRoot" }
+    ];
+
+    const FOLDER_STRUCTURE = [
+      {
+        name: "1. Key Information & Access",
+        description: "Everything someone needs fast: logins, IDs, insurance, contacts.",
+        docs: [
+          "Alex – Key Info & Access",
+          "Insurance Cards",
+          "IDs (Driver’s License / Passport)",
+          "Emergency Contacts",
+          "Provider Contact List",
+          "Shortcuts → Medical Care, Benefits & Government, Legal & Safeguards"
+        ],
+        linkKey: "keyInfoFolder"
+      },
+      {
+        name: "2. Family Action Plan",
+        description: "Operational hub for tasks, meetings, housing, and planning.",
+        docs: [
+          "Family Action Plan",
+          "Meeting Notes",
+          "Housing Options & Applications",
+          "“If This, Then…” Crisis Flowchart",
+          "Budget / Planning Sheets",
+          "Shortcut to: Crisis Plan (Behavioral Health folder)"
+        ],
+        linkKey: "familyActionPlanDoc"
+      },
+      {
+        name: "3. Medical Care",
+        description: "All medical, non-mental-health files.",
+        docs: [
+          "Medical Records",
+          "Medication List",
+          "Lab Results",
+          "UW/Harborview records",
+          "Rehab Contract (Baja rehab PDF)",
+          "Symptom Logs",
+          "Specialist Contacts",
+          "Medical Timeline"
+        ],
+        linkKey: "medicalCareFolder"
+      },
+      {
+        name: "4. Behavioral Health & Recovery",
+        description: "Mental-health and rehab resources for Alex.",
+        docs: [
+          "Crisis Plan",
+          "Routine Templates (PDF + XLSX)",
+          "Therapy Provider List",
+          "Support Groups",
+          "Redpoint Resources",
+          "Facilities List",
+          "Questions for Facilities",
+          "NAMI Notes & Guides",
+          "Journal Prompts",
+          "Rehab information",
+          "Treatment Programs List"
+        ],
+        linkKey: "behavioralHealthFolder"
+      },
+      {
+        name: "5. Benefits & Government Programs",
+        description: "SSA, Medicaid, DSHS, housing vouchers, vocational rehab.",
+        docs: [
+          "Disabled Adult Child Application & Info",
+          "SSI / SSDI Info",
+          "SSA Letters",
+          "Medicaid / Apple Health",
+          "DSHS Documents",
+          "DVR (Vocational Rehab)",
+          "Applications",
+          "Approvals / Determinations",
+          "Housing Voucher Info"
+        ],
+        linkKey: "benefitsFolder"
+      },
+      {
+        name: "6. Legal & Safeguards",
+        description: "Legal authority documents and contacts.",
+        docs: [
+          "Power of Attorney (Health & Financial)",
+          "Guardianship / Court Docs",
+          "HIPAA Releases",
+          "Legal Contact List",
+          "Special Needs Trust Information",
+          "Durable Power of Attorney Guide"
+        ],
+        linkKey: "legalFolder"
+      },
+      {
+        name: "7. Alex’s History & Timeline",
+        description: "Big picture understanding and archived records.",
+        docs: [
+          "Alex’s History & Timeline",
+          "Past Diagnoses Summaries",
+          "Old Records / Older Docs",
+          "Archived Items",
+          "Everything not in current active plan"
+        ],
+        linkKey: "historyFolder"
+      },
+      {
+        name: "8. Resource Library",
+        description: "Helpful items that aren’t needed daily.",
+        docs: [
+          "Articles",
+          "Worksheets",
+          "External Guides",
+          "General Education (non-NAMI)",
+          "Helpful Downloads",
+          "Miscellaneous Resources"
+        ],
+        linkKey: "resourceLibraryFolder"
+      }
+    ];
+
+    const RESOURCE_INDEX = [
+      // 1. Key Information & Access
+      { title: "Alex – Key Info & Access", folder: "1. Key Information & Access", category: "Key Information & Access", linkKey: "alexKeyInfoDoc", tags: ["login", "portals", "insurance", "case manager"] },
+      { title: "Insurance Cards", folder: "1. Key Information & Access", category: "Key Information & Access", linkKey: "insuranceCardsDoc", tags: ["insurance", "card", "coverage"] },
+      { title: "IDs (Driver’s license / Passport)", folder: "1. Key Information & Access", category: "Key Information & Access", linkKey: "idsFolder", tags: ["id", "passport", "license"] },
+      { title: "Emergency Contacts", folder: "1. Key Information & Access", category: "Key Information & Access", linkKey: "emergencyContactsDoc", tags: ["emergency", "contact", "call list"] },
+      { title: "Provider Contact List", folder: "1. Key Information & Access", category: "Key Information & Access", linkKey: "providerContactsDoc", tags: ["provider", "phone", "email"] },
+
+      // 2. Family Action Plan
+      { title: "Family Action Plan", folder: "2. Family Action Plan", category: "Family Action Plan", linkKey: "familyActionPlanDoc", tags: ["plan", "steps", "timeline"] },
+      { title: "Family Meeting Notes", folder: "2. Family Action Plan", category: "Family Action Plan", linkKey: "meetingNotesDoc", tags: ["meeting", "notes", "summary"] },
+      { title: "Housing Options & Applications", folder: "2. Family Action Plan", category: "Family Action Plan", linkKey: "housingOptionsFolder", tags: ["housing", "application", "voucher"] },
+      { title: "“If This, Then…” Crisis Flowchart", folder: "2. Family Action Plan", category: "Family Action Plan", linkKey: "crisisFlowchartDoc", tags: ["crisis", "flowchart", "decision tree"] },
+      { title: "Budget / Planning Sheets", folder: "2. Family Action Plan", category: "Family Action Plan", linkKey: "budgetSheetsFolder", tags: ["budget", "planning", "finance"] },
+
+      // 3. Medical Care
+      { title: "Medical Records", folder: "3. Medical Care", category: "Medical Care", linkKey: "medicalRecordsDoc", tags: ["records", "hospital", "summary"] },
+      { title: "Medication List", folder: "3. Medical Care", category: "Medical Care", linkKey: "medicationListDoc", tags: ["medication", "dose", "rx"] },
+      { title: "Lab Results", folder: "3. Medical Care", category: "Medical Care", linkKey: "labResultsFolder", tags: ["labs", "bloodwork", "results"] },
+      { title: "UW / Harborview records", folder: "3. Medical Care", category: "Medical Care", linkKey: "uwHarborviewFolder", tags: ["uw", "harborview", "records"] },
+      { title: "Rehab Contract (Baja rehab PDF)", folder: "3. Medical Care", category: "Medical Care", linkKey: "rehabContractFile", tags: ["rehab", "contract"] },
+      { title: "Symptom Logs", folder: "3. Medical Care", category: "Medical Care", linkKey: "symptomLogsFolder", tags: ["symptom", "track", "log"] },
+      { title: "Specialist Contacts", folder: "3. Medical Care", category: "Medical Care", linkKey: "specialistContactsDoc", tags: ["specialist", "contact"] },
+      { title: "Medical Timeline", folder: "3. Medical Care", category: "Medical Care", linkKey: "medicalTimelineDoc", tags: ["timeline", "history"] },
+
+      // 4. Behavioral Health & Recovery
+      { title: "Crisis Plan", folder: "4. Behavioral Health & Recovery", category: "Behavioral Health & Recovery", linkKey: "crisisPlanDoc", tags: ["crisis", "plan"] },
+      { title: "Routine Templates", folder: "4. Behavioral Health & Recovery", category: "Behavioral Health & Recovery", linkKey: "routineTemplatesFolder", tags: ["routine", "template"] },
+      { title: "Therapy Provider List", folder: "4. Behavioral Health & Recovery", category: "Behavioral Health & Recovery", linkKey: "therapyProviderListDoc", tags: ["therapy", "provider"] },
+      { title: "Support Groups", folder: "4. Behavioral Health & Recovery", category: "Behavioral Health & Recovery", linkKey: "supportGroupsDoc", tags: ["support", "group"] },
+      { title: "Redpoint Resources", folder: "4. Behavioral Health & Recovery", category: "Behavioral Health & Recovery", linkKey: "redpointResourcesFolder", tags: ["redpoint", "resource"] },
+      { title: "Facilities List", folder: "4. Behavioral Health & Recovery", category: "Behavioral Health & Recovery", linkKey: "facilitiesListDoc", tags: ["facility", "program"] },
+      { title: "Questions for Facilities", folder: "4. Behavioral Health & Recovery", category: "Behavioral Health & Recovery", linkKey: "facilitiesListDoc", tags: ["questions", "intake"] },
+      { title: "NAMI Notes & Guides", folder: "4. Behavioral Health & Recovery", category: "Behavioral Health & Recovery", linkKey: "namiNotesFolder", tags: ["nami", "guide"] },
+      { title: "Journal Prompts", folder: "4. Behavioral Health & Recovery", category: "Behavioral Health & Recovery", linkKey: "journalPromptsFolder", tags: ["journal", "prompt"] },
+      { title: "Rehab Information", folder: "4. Behavioral Health & Recovery", category: "Behavioral Health & Recovery", linkKey: "rehabInfoFolder", tags: ["rehab", "info"] },
+      { title: "Treatment Programs List", folder: "4. Behavioral Health & Recovery", category: "Behavioral Health & Recovery", linkKey: "treatmentProgramsDoc", tags: ["treatment", "program"] },
+
+      // 5. Benefits & Government
+      { title: "Disabled Adult Child Application & Info", folder: "5. Benefits & Government Programs", category: "Benefits & Government Programs", linkKey: "dacApplicationDoc", tags: ["dac", "ssa", "application"] },
+      { title: "SSI / SSDI Info", folder: "5. Benefits & Government Programs", category: "Benefits & Government Programs", linkKey: "ssiInfoDoc", tags: ["ssi", "ssdi"] },
+      { title: "SSA Letters", folder: "5. Benefits & Government Programs", category: "Benefits & Government Programs", linkKey: "ssaLettersFolder", tags: ["ssa", "letter"] },
+      { title: "Medicaid / Apple Health", folder: "5. Benefits & Government Programs", category: "Benefits & Government Programs", linkKey: "medicaidFolder", tags: ["medicaid", "apple health"] },
+      { title: "DSHS Documents", folder: "5. Benefits & Government Programs", category: "Benefits & Government Programs", linkKey: "dshsDocsFolder", tags: ["dshs", "documents"] },
+      { title: "DVR (Vocational Rehab)", folder: "5. Benefits & Government Programs", category: "Benefits & Government Programs", linkKey: "dvrFolder", tags: ["dvr", "vocational"] },
+      { title: "Applications", folder: "5. Benefits & Government Programs", category: "Benefits & Government Programs", linkKey: "applicationsFolder", tags: ["application", "form"] },
+      { title: "Approvals / Determinations", folder: "5. Benefits & Government Programs", category: "Benefits & Government Programs", linkKey: "approvalsFolder", tags: ["approval", "determination"] },
+      { title: "Housing Voucher Info", folder: "5. Benefits & Government Programs", category: "Benefits & Government Programs", linkKey: "housingVoucherInfoDoc", tags: ["voucher", "housing"] },
+
+      // 6. Legal & Safeguards
+      { title: "Power of Attorney (Health & Financial)", folder: "6. Legal & Safeguards", category: "Legal & Safeguards", linkKey: "poaFolder", tags: ["poa", "legal"] },
+      { title: "Guardianship / Court Docs", folder: "6. Legal & Safeguards", category: "Legal & Safeguards", linkKey: "guardianshipDocsFolder", tags: ["guardianship", "court"] },
+      { title: "HIPAA Releases", folder: "6. Legal & Safeguards", category: "Legal & Safeguards", linkKey: "hipaaFolder", tags: ["hipaa", "release"] },
+      { title: "Legal Contact List", folder: "6. Legal & Safeguards", category: "Legal & Safeguards", linkKey: "legalContactsDoc", tags: ["legal", "contact"] },
+      { title: "Special Needs Trust Information", folder: "6. Legal & Safeguards", category: "Legal & Safeguards", linkKey: "specialNeedsTrustDoc", tags: ["trust", "special needs"] },
+      { title: "Durable Power of Attorney Guide", folder: "6. Legal & Safeguards", category: "Legal & Safeguards", linkKey: "durablePoaGuideDoc", tags: ["guide", "poa"] },
+
+      // 7. History & Timeline
+      { title: "Alex’s History & Timeline", folder: "7. Alex’s History & Timeline", category: "Alex’s History & Timeline", linkKey: "alexHistoryTimelineDoc", tags: ["history", "timeline"] },
+      { title: "Past Diagnoses Summaries", folder: "7. Alex’s History & Timeline", category: "Alex’s History & Timeline", linkKey: "pastDiagnosesDoc", tags: ["diagnosis", "summary"] },
+      { title: "Old Records / Older Docs", folder: "7. Alex’s History & Timeline", category: "Alex’s History & Timeline", linkKey: "oldRecordsFolder", tags: ["records", "archive"] },
+      { title: "Archived Items", folder: "7. Alex’s History & Timeline", category: "Alex’s History & Timeline", linkKey: "archivedItemsFolder", tags: ["archive", "older"] },
+
+      // 8. Resource Library
+      { title: "Articles", folder: "8. Resource Library", category: "Resource Library", linkKey: "articlesFolder", tags: ["article", "resource"] },
+      { title: "Worksheets", folder: "8. Resource Library", category: "Resource Library", linkKey: "worksheetsFolder", tags: ["worksheet", "exercise"] },
+      { title: "External Guides", folder: "8. Resource Library", category: "Resource Library", linkKey: "externalGuidesFolder", tags: ["guide", "external"] },
+      { title: "General Education (non-NAMI)", folder: "8. Resource Library", category: "Resource Library", linkKey: "generalEducationFolder", tags: ["education", "general"] },
+      { title: "Helpful Downloads", folder: "8. Resource Library", category: "Resource Library", linkKey: "helpfulDownloadsFolder", tags: ["download", "resource"] },
+      { title: "Miscellaneous Resources", folder: "8. Resource Library", category: "Resource Library", linkKey: "miscResourcesFolder", tags: ["misc", "resource"] }
+    ];
+
+    const updatesList = document.getElementById("updatesList");
+    RECENT_UPDATES.forEach((item) => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <div style="font-size:1.5rem;">•</div>
+        <div>
+          <div>${item.summary}</div>
+          <time>${item.timeAgo} · ${item.author}</time>
+        </div>
+      `;
+      updatesList.appendChild(li);
+    });
+
+    function openLink(linkKey) {
+      const url = HUB_LINKS[linkKey];
+      if (!url || url.includes("REPLACE_")) {
+        alert("Add the real Google Drive link for " + linkKey + " inside index.html when you are ready.");
+        return;
+      }
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+
+    const tileGrid = document.getElementById("tileGrid");
+    TILE_ACTIONS.forEach((tile) => {
+      const button = document.createElement("button");
+      button.className = `tile ${tile.accent || ""}`;
+      button.type = "button";
+      button.innerHTML = `
+        <div>
+          <div class="icon">${tile.icon}</div>
+          <h3>${tile.title}</h3>
+        </div>
+        <p>${tile.blurb}</p>
+      `;
+      button.addEventListener("click", () => openLink(tile.linkKey));
+      tileGrid.appendChild(button);
+    });
+
+    const folderGrid = document.getElementById("folderGrid");
+    FOLDER_STRUCTURE.forEach((folder) => {
+      const card = document.createElement("article");
+      card.className = "folder-card";
+      const listItems = folder.docs.map((doc) => `<li>${doc}</li>`).join("");
+      card.innerHTML = `
+        <h3>${folder.name}</h3>
+        <p>${folder.description}</p>
+        <ul>${listItems}</ul>
+        <footer>
+          <button type="button">Open folder</button>
+          <button type="button">Copy structure</button>
+        </footer>
+      `;
+      const [openBtn, copyBtn] = card.querySelectorAll("button");
+      openBtn.addEventListener("click", () => openLink(folder.linkKey));
+      copyBtn.addEventListener("click", () => {
+        navigator.clipboard.writeText(`${folder.name}\n${folder.docs.join("\n")}`)
+          .then(() => alert("Folder structure copied to clipboard."))
+          .catch(() => alert("Unable to copy right now."));
+      });
+      folderGrid.appendChild(card);
+    });
+
+    const searchInput = document.getElementById("searchInput");
+    const searchBtn = document.getElementById("searchBtn");
+    const searchResults = document.getElementById("searchResults");
+
+    function renderResults(results) {
+      searchResults.innerHTML = "";
+      if (!results.length) {
+        const empty = document.createElement("div");
+        empty.className = "result";
+        empty.innerHTML = `<div class="title">No matches yet.</div><div class="meta">Try broader terms like “medical records”, “therapy”, “SSA”, or “ID”.</div>`;
+        searchResults.appendChild(empty);
+        return;
+      }
+
+      results.slice(0, 8).forEach((item) => {
+        const link = document.createElement("a");
+        link.className = "result";
+        link.href = HUB_LINKS[item.linkKey] || "#";
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.innerHTML = `
+          <div class="title">${item.title}</div>
+          <div class="meta">${item.folder} · ${item.category}</div>
+          <div class="meta">Tags: ${item.tags.join(", ")}</div>
+        `;
+        if (!HUB_LINKS[item.linkKey] || HUB_LINKS[item.linkKey].includes("REPLACE_")) {
+          link.addEventListener("click", (event) => {
+            event.preventDefault();
+            alert("Add the real Google Drive link for " + item.title + " to enable direct access.");
+          });
+        }
+        searchResults.appendChild(link);
+      });
+    }
+
+    function handleSearch() {
+      const query = searchInput.value.trim().toLowerCase();
+      if (!query) {
+        searchResults.innerHTML = "";
+        return;
+      }
+      const hits = RESOURCE_INDEX.filter((item) =>
+        [item.title, item.folder, item.category, item.tags.join(" ")].join(" ").toLowerCase().includes(query)
+      );
+      renderResults(hits);
+    }
+
+    searchBtn.addEventListener("click", handleSearch);
+    searchInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        handleSearch();
+      }
+    });
+
+    document.getElementById("driveBtn").addEventListener("click", () => openLink("driveRoot"));
+    document.getElementById("updatesLogBtn").addEventListener("click", () => openLink("catchupLog"));
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem(STORAGE_KEY);
+      window.location.href = "auth.html";
+    });
+
+    const root = document.documentElement;
+    const contrastBtn = document.getElementById("contrastBtn");
+    const contrastPrefKey = "alexHubContrast";
+    const savedContrast = localStorage.getItem(contrastPrefKey);
+    if (savedContrast === "high") {
+      root.dataset.contrast = "high";
+    }
+    contrastBtn.addEventListener("click", () => {
+      if (root.dataset.contrast === "high") {
+        root.dataset.contrast = "normal";
+        localStorage.removeItem(contrastPrefKey);
+      } else {
+        root.dataset.contrast = "high";
+        localStorage.setItem(contrastPrefKey, "high");
+      }
+    });
+
+    const textSizeSelect = document.getElementById("textSizeSelect");
+    const fontPrefKey = "alexHubBaseFont";
+    const savedFont = localStorage.getItem(fontPrefKey);
+    if (savedFont) {
+      textSizeSelect.value = savedFont;
+      root.style.setProperty("--base-font-size", savedFont + "px");
+    }
+    textSizeSelect.addEventListener("change", (event) => {
+      const size = event.target.value;
+      root.style.setProperty("--base-font-size", size + "px");
+      localStorage.setItem(fontPrefKey, size);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        searchInput.focus();
+      }
+    });
+  </script>
+</body>
+</html>
