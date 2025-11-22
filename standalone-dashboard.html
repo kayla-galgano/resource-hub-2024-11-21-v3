@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Alex's Hub">
+  <title>Alex's Family Resource Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --cyan-500: #06B6D4;
+      --cyan-600: #0891B2;
+      --lime-500: #84CC16;
+      --lime-600: #65A30D;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-cyan-50 to-lime-50 min-h-screen">
+  
+  <!-- Login Screen -->
+  <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 border border-gray-200">
+      
+      <!-- App Logo -->
+      <div class="text-center mb-8">
+        <div class="w-24 h-24 rounded-3xl shadow-lg mx-auto mb-4 flex items-center justify-center"
+             style="background: linear-gradient(to bottom right, #06B6D4 0%, #84CC16 100%)">
+          <svg viewBox="0 0 100 100" class="w-12 h-12" fill="none">
+            <circle cx="50" cy="50" r="42" stroke="white" stroke-width="3" opacity="0.3" />
+            <circle cx="50" cy="50" r="32" stroke="white" stroke-width="3.5" opacity="0.5" />
+            <circle cx="50" cy="50" r="22" stroke="white" stroke-width="4" opacity="0.7" />
+            <circle cx="50" cy="50" r="12" fill="white" />
+            <circle cx="50" cy="50" r="8" fill="white" opacity="0.4" />
+          </svg>
+        </div>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Alex Resource Hub</h1>
+        <p class="text-gray-600">For Alex's family and care team</p>
+      </div>
+      
+      <!-- Login Form -->
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Your Name</label>
+          <input type="text" id="username" placeholder="Enter your name" 
+                 class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400 bg-gray-50 text-gray-900">
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+          <input type="password" id="password" placeholder="Enter password" 
+                 class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400 bg-gray-50 text-gray-900">
+        </div>
+        
+        <div id="errorMsg" class="hidden bg-red-50 border border-red-200 rounded-xl p-3 text-sm text-red-800"></div>
+        
+        <button onclick="login()" 
+                class="w-full py-3 rounded-xl font-semibold bg-cyan-500 text-white hover:bg-cyan-600 transition-colors">
+          Access Dashboard
+        </button>
+
+        <div class="pt-4 border-t border-gray-200">
+          <button onclick="toggleContrast()" 
+                  class="w-full py-2 rounded-lg text-sm bg-gray-100 text-gray-700 hover:bg-gray-200">
+            ◑ High Contrast Mode
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard Screen -->
+  <div id="dashboardScreen" class="hidden min-h-screen pb-20">
+    
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-cyan-600 to-lime-600 text-white p-4 sticky top-0 z-10 shadow-lg">
+      <div class="max-w-4xl mx-auto">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h1 class="text-2xl font-bold">Alex's Care Hub</h1>
+            <p class="text-cyan-100 text-sm">Family Resource Dashboard</p>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="toggleSettings()" class="p-2 rounded-lg hover:bg-white/10 transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+            <button onclick="logout()" class="p-2 rounded-lg hover:bg-white/10 transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Settings Panel -->
+        <div id="settingsPanel" class="hidden mb-4 p-4 rounded-xl bg-white/10 backdrop-blur-sm">
+          <div class="space-y-3">
+            <div>
+              <label class="block text-sm font-medium mb-2">Text Size</label>
+              <div class="flex gap-2 flex-wrap">
+                <button onclick="setTextSize('small')" class="px-3 py-2 rounded-lg bg-white/20 text-sm">Small</button>
+                <button onclick="setTextSize('normal')" class="px-3 py-2 rounded-lg bg-white text-cyan-600 text-sm">Normal</button>
+                <button onclick="setTextSize('large')" class="px-3 py-2 rounded-lg bg-white/20 text-sm">Large</button>
+                <button onclick="setTextSize('xlarge')" class="px-3 py-2 rounded-lg bg-white/20 text-sm">X-Large</button>
+              </div>
+            </div>
+            <div class="text-sm">
+              Logged in as: <strong id="currentUserName"></strong>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Search Bar -->
+        <button onclick="alert('Search feature - integrate with Google Drive API')" 
+                class="w-full px-4 py-3 rounded-xl flex items-center gap-3 bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+          <span class="text-left">Search all files and folders...</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-4xl mx-auto p-4">
+      
+      <!-- What's New Card -->
+      <div class="bg-cyan-50 border-2 border-cyan-200 rounded-2xl p-4 mb-6">
+        <div class="flex items-center gap-2 mb-3">
+          <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+          </svg>
+          <h2 class="font-bold text-gray-900">Recent Updates</h2>
+        </div>
+        <div class="space-y-2">
+          <div class="flex items-start gap-3">
+            <svg class="w-4 h-4 text-cyan-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+            <div class="flex-1">
+              <p class="text-gray-900">Housing application submitted to Redpoint</p>
+              <p class="text-xs text-gray-500">2 days ago</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <svg class="w-4 h-4 text-cyan-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+            <div class="flex-1">
+              <p class="text-gray-900">New therapy resource added</p>
+              <p class="text-xs text-gray-500">1 week ago</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Heading -->
+      <div class="text-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-900 mb-2">What would you like to do today?</h2>
+        <p class="text-gray-600">Tap any tile to find what you need</p>
+      </div>
+
+      <!-- Tile Grid (2x2 on mobile) -->
+      <div class="grid grid-cols-2 gap-3 mb-6">
+        
+        <!-- Tile 1: Login Information -->
+        <button onclick="searchFor('login password credentials')" 
+                class="bg-gradient-to-br from-cyan-500 to-cyan-600 text-white rounded-2xl p-4 shadow-lg hover:shadow-xl active:scale-95 transition-all aspect-square flex flex-col items-center justify-center text-center">
+          <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <circle cx="7.5" cy="15.5" r="5.5"></circle>
+            <path d="m21 2-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"></path>
+          </svg>
+          <h3 class="font-bold text-sm mb-1 leading-tight">Login Information</h3>
+          <p class="text-xs opacity-90 leading-tight">Portals & passwords</p>
+        </button>
+
+        <!-- Tile 2: Family Meeting Notes -->
+        <button onclick="searchFor('family meeting notes')" 
+                class="bg-gradient-to-br from-cyan-400 to-cyan-500 text-white rounded-2xl p-4 shadow-lg hover:shadow-xl active:scale-95 transition-all aspect-square flex flex-col items-center justify-center text-center">
+          <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <h3 class="font-bold text-sm mb-1 leading-tight">Family Meeting Notes</h3>
+          <p class="text-xs opacity-90 leading-tight">Recent discussions</p>
+        </button>
+
+        <!-- Tile 3: Therapy Resources -->
+        <button onclick="searchFor('therapy resources')" 
+                class="bg-gradient-to-br from-lime-500 to-lime-600 text-white rounded-2xl p-4 shadow-lg hover:shadow-xl active:scale-95 transition-all aspect-square flex flex-col items-center justify-center text-center">
+          <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+          </svg>
+          <h3 class="font-bold text-sm mb-1 leading-tight">Therapy Resources</h3>
+          <p class="text-xs opacity-90 leading-tight">Support & treatment</p>
+        </button>
+
+        <!-- Tile 4: Family Action Plan -->
+        <button onclick="searchFor('action plan')" 
+                class="bg-gradient-to-br from-lime-400 to-lime-500 text-white rounded-2xl p-4 shadow-lg hover:shadow-xl active:scale-95 transition-all aspect-square flex flex-col items-center justify-center text-center">
+          <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect>
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M12 11h4M12 16h4M8 11h.01M8 16h.01"></path>
+          </svg>
+          <h3 class="font-bold text-sm mb-1 leading-tight">Family Action Plan</h3>
+          <p class="text-xs opacity-90 leading-tight">Current plan & goals</p>
+        </button>
+
+        <!-- Tile 5: Medical Records -->
+        <button onclick="searchFor('medical records')" 
+                class="bg-gradient-to-br from-cyan-500 to-cyan-600 text-white rounded-2xl p-4 shadow-lg hover:shadow-xl active:scale-95 transition-all aspect-square flex flex-col items-center justify-center text-center">
+          <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <path d="M12 12.5c-.85-.85-2-1.28-3-1.28-1.5 0-2.5.83-2.5 2.5 0 2.5 5.5 4.78 5.5 4.78s5.5-2.28 5.5-4.78c0-1.67-1-2.5-2.5-2.5-1 0-2.15.43-3 1.28z"></path>
+          </svg>
+          <h3 class="font-bold text-sm mb-1 leading-tight">Medical Records</h3>
+          <p class="text-xs opacity-90 leading-tight">History & labs</p>
+        </button>
+
+        <!-- Tile 6: Contact Information -->
+        <button onclick="searchFor('contacts emergency')" 
+                class="bg-gradient-to-br from-cyan-300 to-cyan-400 text-white rounded-2xl p-4 shadow-lg hover:shadow-xl active:scale-95 transition-all aspect-square flex flex-col items-center justify-center text-center">
+          <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+          </svg>
+          <h3 class="font-bold text-sm mb-1 leading-tight">Contact Information</h3>
+          <p class="text-xs opacity-90 leading-tight">Providers & emergency</p>
+        </button>
+
+        <!-- Tile 7: Crisis Plan -->
+        <button onclick="searchFor('crisis plan')" 
+                class="bg-gradient-to-br from-red-500 to-red-600 text-white rounded-2xl p-4 shadow-lg hover:shadow-xl active:scale-95 transition-all aspect-square flex flex-col items-center justify-center text-center">
+          <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+          <h3 class="font-bold text-sm mb-1 leading-tight">Crisis Plan</h3>
+          <p class="text-xs opacity-90 leading-tight">Emergency procedures</p>
+        </button>
+
+        <!-- Tile 8: Benefits & Programs -->
+        <button onclick="searchFor('benefits SSI medicaid')" 
+                class="bg-gradient-to-br from-lime-400 to-lime-500 text-white rounded-2xl p-4 shadow-lg hover:shadow-xl active:scale-95 transition-all aspect-square flex flex-col items-center justify-center text-center">
+          <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <rect width="20" height="14" x="2" y="7" rx="2" ry="2"></rect>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+          </svg>
+          <h3 class="font-bold text-sm mb-1 leading-tight">Benefits & Programs</h3>
+          <p class="text-xs opacity-90 leading-tight">SSI, Medicaid, housing</p>
+        </button>
+
+        <!-- Add more tiles as needed... -->
+      </div>
+
+      <!-- Quick Link -->
+      <div class="text-center">
+        <a href="https://drive.google.com/drive/folders/1Yw2pL35py7vgj0-5Iq1JanWijSYOYB6J" 
+           target="_blank" 
+           rel="noopener noreferrer"
+           class="inline-flex items-center gap-2 text-sm text-cyan-600 hover:text-cyan-800 font-medium">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"></path>
+          </svg>
+          View All Files in Google Drive
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const PASSWORD = 'alex123';
+    const FOLDER_ID = '1Yw2pL35py7vgj0-5Iq1JanWijSYOYB6J';
+
+    // Login function
+    function login() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const errorMsg = document.getElementById('errorMsg');
+
+      if (!username) {
+        errorMsg.textContent = 'Please enter your name';
+        errorMsg.classList.remove('hidden');
+        return;
+      }
+
+      if (password === PASSWORD) {
+        sessionStorage.setItem('familyDashboardAuth', 'true');
+        sessionStorage.setItem('familyDashboardUser', username);
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('dashboardScreen').classList.remove('hidden');
+        document.getElementById('currentUserName').textContent = username;
+      } else {
+        errorMsg.textContent = 'Incorrect password. Please try again.';
+        errorMsg.classList.remove('hidden');
+      }
+    }
+
+    // Logout function
+    function logout() {
+      sessionStorage.removeItem('familyDashboardAuth');
+      sessionStorage.removeItem('familyDashboardUser');
+      document.getElementById('loginScreen').classList.remove('hidden');
+      document.getElementById('dashboardScreen').classList.add('hidden');
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+    }
+
+    // Toggle settings
+    function toggleSettings() {
+      document.getElementById('settingsPanel').classList.toggle('hidden');
+    }
+
+    // Set text size
+    function setTextSize(size) {
+      localStorage.setItem('textSize', size);
+      // Implement text size changes here
+      alert('Text size set to: ' + size);
+    }
+
+    // Toggle contrast
+    function toggleContrast() {
+      alert('High contrast mode - implement styling changes');
+    }
+
+    // Search function (placeholder)
+    function searchFor(query) {
+      alert('Searching for: ' + query + '\n\nIntegrate with Google Drive API or Claude API here!');
+    }
+
+    // Check if already logged in
+    window.onload = function() {
+      const auth = sessionStorage.getItem('familyDashboardAuth');
+      const user = sessionStorage.getItem('familyDashboardUser');
+      
+      if (auth === 'true' && user) {
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('dashboardScreen').classList.remove('hidden');
+        document.getElementById('currentUserName').textContent = user;
+      }
+    };
+
+    // Allow Enter key for login
+    document.getElementById('password').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') login();
+    });
+  </script>
+</body>
+</html>
